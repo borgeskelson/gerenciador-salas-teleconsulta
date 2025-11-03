@@ -1,0 +1,19 @@
+services:
+  teleconsulta-app:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: teleconsulta_dev
+    # Mapeia a porta 8080 do contêiner (Spring Boot) para a porta 8080 da máquina local
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    # Inicia a aplicação usando o Maven, permite o hot-reloading com uso do 'spring-boot-devtools'
+    command: mvn spring-boot:run
+    volumes:
+      # Monta o diretório atual com o código-fonte para o diretório /app no contêiner
+      - .:/app
+      # Volume para o cache do Maven (.m2), evita que o Maven baixe novamente as dependências a cada execução
+      - maven_repo:/root/.m2
+
+# Define o volume para o cache do Maven
+volumes:
+  maven_repo:
