@@ -1,0 +1,151 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/template.xhtml">
+
+    <ui:define name="titulo">Cadastro de Pacientes</ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="formPaciente">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton value="Novo Paciente" icon="pi pi-user-plus"
+                                     actionListener="#{pacienteController.prepararNovo}"
+                                     oncomplete="PF('dialogPaciente').show()"
+                                     update=":dialogForm:dialogContent" />
+                </p:toolbarGroup>
+                
+                <p:toolbarGroup align="right">
+	                <p:inputText id="termoBusca" 
+	                             placeholder="Buscar por Nome, CPF ou CNS" 
+	                             style="width: 250px; margin-right: 5px;"
+	                             onkeypress="if (event.keyCode == 13) { document.getElementById('formPaciente:btnBusca').click(); return false; }" />
+	                             
+	                <p:commandButton id="btnBusca" 
+	                                 value="Buscar" 
+	                                 icon="pi pi-search"
+	                                 update="tabelaPacientes messages"
+	                                 styleClass="ui-button-info" />
+	            </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:dataTable id="tabelaPacientes" var="paciente" value="#{pacienteController.pacientes}"
+                         paginator="true" rows="5" emptyMessage="Nenhum paciente encontrado.">
+                
+                <p:column headerText="Nome" sortBy="#{paciente.nome}">
+                    <h:outputText value="#{paciente.nome}" />
+                </p:column>
+                
+                <p:column headerText="Nome Social" sortBy="#{paciente.nomeSocial}">
+                    <h:outputText value="#{paciente.nomeSocial}" />
+                </p:column>
+                
+                <p:column headerText="Sexo" sortBy="#{paciente.sexo}">
+                    <h:outputText value="#{paciente.sexo}" />
+                </p:column>
+                
+                <p:column headerText="CPF" sortBy="#{paciente.cpf}">
+                    <h:outputText value="#{paciente.cpf}" />
+                </p:column>
+                
+                <p:column headerText="RG" sortBy="#{paciente.rg}">
+                    <h:outputText value="#{paciente.rg}" />
+                </p:column>
+                
+                <p:column headerText="CNS" sortBy="#{paciente.cns}">
+                    <h:outputText value="#{paciente.cns}" />
+                </p:column>
+
+                <p:column headerText="Telefone" sortBy="#{paciente.telefone}">
+                    <h:outputText value="#{paciente.telefone}" />
+                </p:column>
+                
+                <p:column headerText="Data Nasc." sortBy="#{paciente.dataNascimento}">
+                    <h:outputText value="#{paciente.dataNascimento}">
+                        <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Ações" style="width:100px; text-align: center">
+                    <p:commandButton icon="pi pi-pencil"
+                                     actionListener="#{pacienteController.editar(paciente)}"
+                                     oncomplete="PF('dialogPaciente').show()"
+                                     update=":dialogForm:dialogContent"
+                                     styleClass="ui-button-warning rounded-button"
+                                     style="margin-right: 5px;"/>
+                    
+                    <p:commandButton icon="pi pi-trash"
+                                     actionListener="#{pacienteController.excluir(paciente.id)}"
+                                     update="tabelaPacientes messages"
+                                     styleClass="ui-button-danger rounded-button">
+                        <p:confirm header="Confirmação" message="Deseja realmente excluir o paciente?" icon="pi pi-exclamation-triangle" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>
+        </h:form>
+
+        <p:dialog header="Dados do Paciente" widgetVar="dialogPaciente" modal="true"
+                  showEffect="fade" hideEffect="fade" resizable="false" width="500">
+            <h:form id="dialogForm">
+                <h:panelGrid id="dialogContent" columns="2" cellpadding="5">
+                    <p:outputLabel for="nome" value="Nome:" />
+                    <p:inputText id="nome" value="#{pacienteController.selecionado.nome}" required="true" />
+                    
+                    <p:outputLabel for="nomeSocial" value="Nome Social:" />
+                    <p:inputText id="nomeSocial" value="#{pacienteController.selecionado.nomeSocial}" />
+
+                    <p:outputLabel for="sexo" value="Sexo:" />
+                    <p:selectOneMenu id="sexo" value="#{pacienteController.selecionado.sexo}" required="true">
+                        <f:selectItem itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
+                        <f:selectItem itemLabel="Feminino" itemValue="FEMININO" />
+                        <f:selectItem itemLabel="Outros" itemValue="OUTROS" />
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel for="nomeMae" value="Nome da Mãe:" />
+                    <p:inputText id="nomeMae" value="#{pacienteController.selecionado.nomeMae}" required="true" />
+                    
+                    <p:outputLabel for="nomePai" value="Nome do Pai (Opcional):" />
+                    <p:inputText id="nomePai" value="#{pacienteController.selecionado.nomePai}" />
+                    
+                    <p:outputLabel for="cpf" value="CPF:" />
+                    <p:inputMask id="cpf" value="#{pacienteController.selecionado.cpf}" mask="999.999.999-99" required="true" />
+                    
+                    <p:outputLabel for="rg" value="RG:" />
+                    <p:inputText id="rg" value="#{pacienteController.selecionado.rg}" maxlength="10" />
+                    
+                    <p:outputLabel for="cns" value="CNS:" />
+                    <p:inputText id="cns" value="#{pacienteController.selecionado.cns}" mask="999999999999999" />
+                    
+                    <p:outputLabel for="telefone" value="Telefone:" />
+                    <p:inputMask id="telefone" value="#{pacienteController.selecionado.telefone}" mask="(99) 99999-9999" required="true" />
+
+                    <p:outputLabel for="email" value="E-mail:" />
+                    <p:inputText id="email" value="#{pacienteController.selecionado.email}" required="true" />
+                    
+                    <p:outputLabel for="nasc" value="Data de Nasc.:" />
+                    <p:calendar id="nasc" value="#{pacienteController.selecionado.dataNascimento}" pattern="dd/MM/yyyy" required="true" />
+                    
+                    <p:outputLabel for="endereco" value="Endereço:" />
+                    <p:inputTextarea id="endereco" value="#{pacienteController.selecionado.endereco}" cols="30" rows="3" />
+                </h:panelGrid>
+                
+                <p:commandButton value="Salvar" actionListener="#{pacienteController.salvar}"
+                                 update=":formPaciente:tabelaPacientes :formPaciente:messages"
+                                 oncomplete="if (!args.validationFailed) PF('dialogPaciente').hide()" />
+                                 
+                <p:commandButton value="Cancelar" oncomplete="PF('dialogPaciente').hide()"
+                                 styleClass="ui-button-secondary" style="margin-left: 5px;"/>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
