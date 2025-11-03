@@ -1,5 +1,6 @@
 package br.gov.ba.saude.teleconsulta.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import br.gov.ba.saude.teleconsulta.model.Sala;
@@ -9,4 +10,5 @@ public interface SalaService {
 	Sala criar(Sala sala);
 	Sala editar(Sala sala);
 	void remover(Long id);
+	List<Sala> consultarDisponibilidade(Long unidadeId, LocalDateTime inicio, LocalDateTime fim);
 }
