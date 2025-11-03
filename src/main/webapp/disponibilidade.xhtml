@@ -1,0 +1,118 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/template.xhtml">
+
+    <ui:define name="titulo">Consultar Disponibilidade de Salas</ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="formDisponibilidade">
+            <p:growl id="messages" showDetail="true" />
+            
+            <p:panel header="Filtro de Disponibilidade">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel for="unidade" value="Unidade de Saúde:" />
+                    <p:selectOneMenu id="unidade" value="#{reservaController.unidadeId}" required="true">
+                        <f:selectItem itemLabel="Selecione a Unidade" itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{reservaController.unidades}" var="unidade"
+                                       itemLabel="#{unidade.nome} (#{unidade.sigla})" itemValue="#{unidade.id}" />
+                    </p:selectOneMenu>
+                    
+                    <h:outputText value=""/>
+                    
+                    <p:outputLabel for="inicio" value="Início da Reserva:" />
+                    <p:calendar id="inicio" 
+                    			value="#{reservaController.dataHoraInicio}" 
+                    			pattern="dd/MM/yyyy HH:mm" 
+                                mask="true" 
+                                showOn="button"
+		                        locale="pt" 
+		                        required="true"
+		                        showHour="true" 
+		                        showMinute="true" 
+		                        stepMinute="5" />
+                    <p:message for="inicio" />
+                    
+                    <p:outputLabel for="fim" value="Término da Reserva:" />
+                    <p:calendar id="fim" 
+                    			value="#{reservaController.dataHoraFim}" 
+                    			pattern="dd/MM/yyyy HH:mm" 
+                                mask="true" 
+                                showOn="button"
+		                        locale="pt" 
+		                        required="true"
+		                        showHour="true" 
+		                        showMinute="true" 
+		                        stepMinute="5" />
+                    <p:message for="fim" />
+                </h:panelGrid>
+                
+                <p:commandButton value="Consultar" actionListener="#{reservaController.consultarDisponibilidade}"
+                                 update="messages tabelaDisponiveis" icon="pi pi-search" style="margin-top: 10px;"/>
+            </p:panel>
+
+            <p:separator style="margin: 20px 0;"/>
+
+            <p:panel header="Salas Disponíveis">
+                <p:dataTable id="tabelaDisponiveis" var="sala" value="#{reservaController.salasDisponiveis}"
+                             emptyMessage="Realize a consulta acima para ver as salas disponíveis.">
+                    <p:column headerText="Nome da Sala">
+                        <h:outputText value="#{sala.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="Capacidade">
+                        <h:outputText value="#{sala.capacidade}" />
+                    </p:column>
+
+                    <p:column headerText="Unidade de Saúde">
+                        <h:outputText value="#{sala.unidadeSaude.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="Ação" style="width:100px; text-align: center">
+					    <p:commandButton value="Reservar" icon="pi pi-bookmark" styleClass="ui-button-success"
+					                     actionListener="#{reservaController.prepararReservaRapida(sala)}"
+					                     oncomplete="PF('dialogReservarDisponibilidade').show()"
+					                     update=":dialogFormDisponibilidade:dialogContentDisponibilidade" />
+					</p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+        
+        <p:dialog header="Confirmar Reserva" widgetVar="dialogReservarDisponibilidade" modal="true"
+	              showEffect="fade" hideEffect="fade" resizable="false" >
+	        <h:form id="dialogFormDisponibilidade">
+	            <h:panelGrid id="dialogContentDisponibilidade" columns="2" cellpadding="5">
+	                <p:outputLabel for="salaInfo" value="Sala Selecionada:" />
+	                <h:outputText id="salaInfo" value="#{reservaController.selecionada.sala.unidadeSaude.sigla} - #{reservaController.selecionada.sala.nome}" />
+	
+	                <p:outputLabel for="periodoInicio" value="Período Início:" />
+	                <h:outputText id="periodoInicio" value="#{reservaController.selecionada.dataHoraInicio}">
+	                    <f:convertDateTime type="localDate" pattern="dd/MM/yyyy HH:mm" />
+	                </h:outputText>
+	
+	                <p:outputLabel for="periodoTermino" value="Período Término:" />
+	                <h:outputText id="periodoTermino" value="#{reservaController.selecionada.dataHoraTermino}">
+	                    <f:convertDateTime type="localDate" pattern="dd/MM/yyyy HH:mm" />
+	                </h:outputText>
+	
+	                <p:outputLabel for="usuario" value="Usuário Responsável:" />
+	                <p:selectOneMenu id="usuario" value="#{reservaController.selecionada.usuario.id}" required="true">
+	                    <f:selectItem itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true" />
+	                    <f:selectItems value="#{reservaController.usuarios}" var="usuario"
+	                                   itemLabel="#{usuario.nome}" itemValue="#{usuario.id}" />
+	                </p:selectOneMenu>
+	
+	            </h:panelGrid>
+	
+	            <p:commandButton value="Confirmar Reserva" actionListener="#{reservaController.salvar}"
+	                             update=":formDisponibilidade:tabelaDisponiveis :formDisponibilidade:messages"
+	                             oncomplete="if (!args.validationFailed) PF('dialogReservarDisponibilidade').hide()"
+	                             styleClass="ui-button-success" />
+	            <p:commandButton value="Cancelar" oncomplete="PF('dialogReservarDisponibilidade').hide()"
+	                             styleClass="ui-button-secondary" style="margin-left: 5px;"/>
+	        </h:form>
+	    </p:dialog>
+    </ui:define>
+</ui:composition>
