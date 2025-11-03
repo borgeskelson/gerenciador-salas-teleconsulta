@@ -102,6 +102,23 @@
                         <f:selectItem itemLabel="Administrador" itemValue="ADMINISTRADOR" />
                         <f:selectItem itemLabel="Restrito" itemValue="RESTRITO" />
                     </p:selectOneMenu>
+                    
+                    <p:outputLabel for="senhaNovo" value="Senha:" rendered="#{usuarioController.selecionado.id == null}" />
+                    <p:password id="senhaNovo" 
+                                value="#{usuarioController.novaSenha}" 
+                                rendered="#{usuarioController.selecionado.id == null}"
+                                required="true"
+                                feedback="true" 
+                                toggleMask="true" />
+                    
+                    <p:outputLabel for="senhaEdicao" value="Senha:" rendered="#{usuarioController.selecionado.id != null}" />
+                    <p:password id="senhaEdicao" 
+                                value="#{usuarioController.novaSenha}" 
+                                rendered="#{usuarioController.selecionado.id != null}"
+                                required="false"
+                                feedback="true" 
+                                toggleMask="true" 
+                                placeholder="Deixe vazio para manter a senha" />
                 </h:panelGrid>
                 
                 <p:commandButton value="Salvar" actionListener="#{usuarioController.salvar}"
