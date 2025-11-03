@@ -11,6 +11,21 @@
     <ui:define name="conteudo">
         <h:form>
             <p:panel header="Bem-vindo ao Sistema de Gerenciamento de Salas de Espera">
+                <h:panelGrid columns="1" cellpadding="10">
+                    <p:outputLabel>
+                        Olá, 
+                        <span style="font-weight: bold;">
+                            <h:outputText value="#{securityUtil.username}" />
+                        </span>!
+                    </p:outputLabel>
+                    
+                    <p:outputLabel>
+                        Seu perfil de acesso é: 
+                        <span style="font-weight: bold; color: #106f33;">
+                            <h:outputText value="#{securityUtil.perfil}" />
+                        </span>
+                    </p:outputLabel>
+                </h:panelGrid>
             </p:panel>
         </h:form>
     </ui:define>

@@ -26,12 +26,12 @@
         <div class="layout-sidebar">
             <h:form>
                 <p:panelMenu>
-                    <p:submenu label="Reservas" expanded="true" >
+                    <p:submenu label="Reservas" expanded="true" rendered="#{securityUtil.isAdmin() or securityUtil.isRestrito()}">
                         <p:menuitem value="Consultar Disponibilidade" outcome="/disponibilidade.xhtml" icon="pi pi-calendar" />
                         <p:menuitem value="Gerenciar Reservas" outcome="/reserva.xhtml" icon="pi pi-check-square" />
                     </p:submenu>
                     
-                    <p:submenu label="Cadastros" expanded="true" >
+                    <p:submenu label="Cadastros" expanded="true" rendered="#{securityUtil.isAdmin()}">
                         <p:menuitem value="Usuários" outcome="/usuario.xhtml" icon="pi pi-user" />
                         <p:menuitem value="Pacientes" outcome="/paciente.xhtml" icon="pi pi-users" />
                         <p:menuitem value="Unidades de Saúde" outcome="/unidadeSaude.xhtml" icon="pi pi-building" />
