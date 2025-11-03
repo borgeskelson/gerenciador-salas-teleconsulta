@@ -17,7 +17,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-    	String emailUsuario01 = "usuario1@saude.ba.gov.br"; 
+    	String emailUsuario01 = "usuario1@dominio.com"; 
     	String senhaUsuario01 = "123456";
     	Usuario usuario01 = usuarioService.obterUsuarioPorEmail(emailUsuario01);
     	
@@ -39,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
         
         System.out.println(">>> Acesso Usuário 01 (Perfil Admin): "+emailUsuario01+" / "+senhaUsuario01);
         
-        String emailUsuario02 = "usuario2@saude.ba.gov.br"; 
+        String emailUsuario02 = "usuario2@dominio.com"; 
     	String senhaUsuario02 = "123456";
         Usuario usuarioAte = usuarioService.obterUsuarioPorEmail(emailUsuario02);
         
