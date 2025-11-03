@@ -1,0 +1,110 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/template.xhtml">
+
+    <ui:define name="titulo">Cadastro de Unidades de Saúde</ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="formUnidade">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton value="Nova Unidade" icon="pi pi-plus"
+                                     actionListener="#{unidadeController.prepararNovo}"
+                                     oncomplete="PF('dialogUnidade').show()"
+                                     update=":dialogForm:dialogContent" />
+                </p:toolbarGroup>
+                
+                <p:toolbarGroup align="right">
+	                <p:inputText id="termoBusca" 
+	                             placeholder="Buscar Nome, Sigla ou CNPJ" 
+	                             style="width: 300px; margin-right: 5px;"
+	                             onkeypress="if (event.keyCode == 13) { document.getElementById('formUnidade:btnBusca').click(); return false; }" />
+	                             
+	                <p:commandButton id="btnBusca" 
+	                                 value="Buscar" 
+	                                 icon="pi pi-search"
+	                                 update="tabelaUnidades messages"
+	                                 styleClass="ui-button-info" />
+	            </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:dataTable id="tabelaUnidades" var="unidade" value="#{unidadeController.unidades}"
+                         paginator="true" rows="5" emptyMessage="Nenhuma unidade encontrada.">
+                
+                <p:column headerText="Nome" sortBy="#{unidade.nome}">
+                    <h:outputText value="#{unidade.nome}" />
+                </p:column>
+                
+                <p:column headerText="Razão Social" sortBy="#{unidade.razaoSocial}">
+                    <h:outputText value="#{unidade.razaoSocial}" />
+                </p:column>
+                
+                <p:column headerText="Sigla" sortBy="#{unidade.sigla}">
+                    <h:outputText value="#{unidade.sigla}" />
+                </p:column>
+
+                <p:column headerText="CNPJ">
+                    <h:outputText value="#{unidade.cnpj}" /> 
+                </p:column>
+
+                <p:column headerText="CNES">
+                    <h:outputText value="#{unidade.cnes}" /> 
+                </p:column>
+                
+                <p:column headerText="Ações" style="width:100px; text-align: center">
+                    <p:commandButton icon="pi pi-pencil"
+                                     actionListener="#{unidadeController.setSelecionada(unidade)}"
+                                     oncomplete="PF('dialogUnidade').show()"
+                                     update=":dialogForm:dialogContent"
+                                     styleClass="ui-button-warning rounded-button"
+                                     style="margin-right: 5px;"/>
+                    
+                    <p:commandButton icon="pi pi-trash"
+                                     actionListener="#{unidadeController.excluir(unidade.id)}"
+                                     update="tabelaUnidades messages"
+                                     styleClass="ui-button-danger rounded-button">
+                        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="pi pi-exclamation-triangle" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>
+        </h:form>
+
+        <p:dialog header="Dados da Unidade" widgetVar="dialogUnidade" modal="true"
+                  showEffect="fade" hideEffect="fade" resizable="false">
+            <h:form id="dialogForm">
+                <h:panelGrid id="dialogContent" columns="2" cellpadding="5">
+                    <p:outputLabel for="nome" value="Nome:" />
+                    <p:inputText id="nome" value="#{unidadeController.selecionada.nome}" required="true" /> 
+                    
+                    <p:outputLabel for="razaoSocial" value="Razão Social:" />
+                    <p:inputText id="razaoSocial" value="#{unidadeController.selecionada.razaoSocial}" /> 
+
+                    <p:outputLabel for="sigla" value="Sigla:" />
+                    <p:inputText id="sigla" value="#{unidadeController.selecionada.sigla}" /> 
+                    
+                    <p:outputLabel for="cnpj" value="CNPJ:" />
+                    <p:inputMask id="cnpj" value="#{unidadeController.selecionada.cnpj}" mask="99.999.999/9999-99" required="true" /> 
+
+                    <p:outputLabel for="cnes" value="CNES:" />
+                    <p:inputMask id="cnes" value="#{unidadeController.selecionada.cnes}" mask="9999999" required="true" /> 
+                </h:panelGrid>
+                
+                <p:commandButton value="Salvar" actionListener="#{unidadeController.salvar}"
+                                 update=":formUnidade:tabelaUnidades :formUnidade:messages"
+                                 oncomplete="if (!args.validationFailed) PF('dialogUnidade').hide()" />
+                <p:commandButton value="Cancelar" oncomplete="PF('dialogUnidade').hide()"
+                                 styleClass="ui-button-secondary" style="margin-left: 5px;"/>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
