@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.layout-top {
+    background-color: #0078d7; /* Cor Primária */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.layout-main-container {
+    display: flex;
+    min-height: calc(100vh - 60px); /* Altura da tela menos o topo */
+}
+
+.layout-sidebar {
+    width: 300px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-right: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.layout-content {
+    flex-grow: 1;
+    padding: 20px;
+}
