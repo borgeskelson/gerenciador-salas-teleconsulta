@@ -47,6 +47,9 @@ public class ReservaController implements Serializable {
 	// Resultado da consulta de salas disponíveis
 	private List<Sala> salasDisponiveis;
 	
+	// Campo de busca
+	private String termoBusca;
+	
 	public ReservaController(ReservaService reservaService, SalaService salaService, UsuarioService usuarioService, 
 			UnidadeSaudeService unidadeSaudeService) {
 		this.reservaService = reservaService;
@@ -123,6 +126,28 @@ public class ReservaController implements Serializable {
 	}
 	
 	/**
+	* Realiza a busca por múltiplos campos.
+	*/
+	public void buscar() {
+		try {
+			if (termoBusca == null || termoBusca.trim().isEmpty()) {
+				carregar();
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Busca", "Lista completa carregada."));
+			} else {
+				this.reservas = reservaService.buscarPorTermo(termoBusca);
+				
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Busca", this.reservas.size() + " reservas encontrados."));
+			}
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, 
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao realizar a busca."));
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	* Executa a consulta de salas disponíveis utilizando o serviço.
 	* Esta ação dispara a Criteria API implementada no ReservaServiceImpl.
 	*/
@@ -160,10 +185,6 @@ public class ReservaController implements Serializable {
 		this.selecionada.setDataHoraTermino(this.dataHoraFim);
 		this.selecionada.setUsuario(new Usuario()); 
 	}
-
-	public ReservaService getReservaService() {
-		return reservaService;
-	}
 	
 	public List<Reserva> getReservas() {
 		return reservas;
@@ -171,6 +192,10 @@ public class ReservaController implements Serializable {
 	
 	public Reserva getSelecionada() {
 		return selecionada;
+	}
+
+	public void setSelecionada(Reserva selecionada) {
+		this.selecionada = selecionada;
 	}
 	
 	public List<Sala> getSalas() {
@@ -215,6 +240,14 @@ public class ReservaController implements Serializable {
 
 	public List<Sala> getSalasDisponiveis() {
 		return salasDisponiveis;
+	}
+
+	public String getTermoBusca() {
+		return termoBusca;
+	}
+
+	public void setTermoBusca(String termoBusca) {
+		this.termoBusca = termoBusca;
 	}
 	
 }

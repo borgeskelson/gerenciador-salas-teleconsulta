@@ -17,97 +17,130 @@ import jakarta.inject.Named;
 @Component
 @ViewScoped
 public class UnidadeSaudeController implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private final UnidadeSaudeService unidadeSaudeService;
-    
-    private List<UnidadeSaude> unidades;
-    private UnidadeSaude selecionada;
-    private boolean edicao;
+	
+	private List<UnidadeSaude> unidades;
+	private UnidadeSaude selecionada;
+	private boolean edicao;
 
-    // Injeção de dependência do Spring
-    public UnidadeSaudeController(UnidadeSaudeService unidadeSaudeService) {
-        this.unidadeSaudeService = unidadeSaudeService;
-    }
+	// Campo de busca
+	private String termoBusca;
 
-    /**
-     * Método executado após a criação do bean para carregar os dados iniciais.
-     */
-    @PostConstruct
-    public void carregar() {
-        this.unidades = unidadeSaudeService.buscarTodas();
-        this.edicao = false;
-    }
+	// Injeção de dependência do Spring
+	public UnidadeSaudeController(UnidadeSaudeService unidadeSaudeService) {
+		this.unidadeSaudeService = unidadeSaudeService;
+	}
 
-    /**
-     * Prepara um novo objeto para cadastro.
-     */
-    public void prepararNovo() {
-    	if (this.selecionada == null || this.edicao == true) {
-    		this.selecionada = new UnidadeSaude();
-    		this.edicao = false;
-    	}
-    }
-    
-    public void editar(UnidadeSaude selecionado) {
+	/**
+	 * Método executado após a criação do bean para carregar os dados iniciais.
+	 */
+	@PostConstruct
+	public void carregar() {
+		this.unidades = unidadeSaudeService.buscarTodas();
+		this.edicao = false;
+	}
+
+	/**
+	 * Prepara um novo objeto para cadastro.
+	 */
+	public void prepararNovo() {
+		if (this.selecionada == null || this.edicao == true) {
+			this.selecionada = new UnidadeSaude();
+			this.edicao = false;
+		}
+	}
+	
+	public void editar(UnidadeSaude selecionado) {
 		this.selecionada = selecionado;
 		this.edicao = true;
 	}
 
-    /**
-     * Salva (cria ou atualiza) a unidade de saúde.
-     */
-    public void salvar() {
-        try {
-        	if (!edicao) {
-        		unidadeSaudeService.criar(selecionada);
-        		
-        		FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade criada com sucesso."));
-        	} else {
-        		unidadeSaudeService.editar(selecionada);
-        		
-        		FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade atualizada com sucesso."));
-        	}
-            
-        	this.selecionada = null;
-            carregar();
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao salvar a unidade."));
-        }
-    }
-
-    /**
-     * Exclui uma unidade de saúde.
-     */
-    public void excluir(Long id) {
-        try {
-        	unidadeSaudeService.remover(id);
-            carregar(); 
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade excluída com sucesso."));
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir a unidade."));
-        }
-    }
-
-    public List<UnidadeSaude> getUnidades() {
-        return unidades;
-    }
-
-    public UnidadeSaude getSelecionada() {
-        return selecionada;
-    }
-
-    public void setSelecionada(UnidadeSaude selecionada) {
-        this.selecionada = selecionada;
-    }
-    
-    public boolean getEdicao() {
-        return edicao;
+	/**
+	 * Salva (cria ou atualiza) a unidade de saúde.
+	 */
+	public void salvar() {
+		try {
+			if (!edicao) {
+				unidadeSaudeService.criar(selecionada);
+				
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade criada com sucesso."));
+			} else {
+				unidadeSaudeService.editar(selecionada);
+				
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade atualizada com sucesso."));
+			}
+			
+			this.selecionada = null;
+			carregar();
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, 
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao salvar a unidade."));
+		}
 	}
-    
+
+	/**
+	 * Exclui uma unidade de saúde.
+	 */
+	public void excluir(Long id) {
+		try {
+			unidadeSaudeService.remover(id);
+			carregar(); 
+			FacesContext.getCurrentInstance().addMessage(null, 
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Unidade excluída com sucesso."));
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, 
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir a unidade."));
+		}
+	}
+	
+	/**
+	 * Realiza a busca na tabela por múltiplos campos.
+	 */
+	public void buscar() {
+		try {
+			if (termoBusca == null || termoBusca.trim().isEmpty()) {
+				carregar(); 
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Busca", "Lista completa carregada."));
+			} else {
+				this.unidades = unidadeSaudeService.buscarPorTermo(termoBusca);
+				
+				FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Busca", this.unidades.size() + " unidades encontradas."));
+			}
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, 
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao realizar a busca."));
+			e.printStackTrace();
+		}
+	}
+
+	public List<UnidadeSaude> getUnidades() {
+		return unidades;
+	}
+
+	public UnidadeSaude getSelecionada() {
+		return selecionada;
+	}
+
+	public void setSelecionada(UnidadeSaude selecionada) {
+		this.selecionada = selecionada;
+	}
+	
+	public boolean getEdicao() {
+		return edicao;
+	}
+	
+	public String getTermoBusca() {
+		return termoBusca;
+	}
+
+	public void setTermoBusca(String termoBusca) {
+		this.termoBusca = termoBusca;
+	}
+	
 }

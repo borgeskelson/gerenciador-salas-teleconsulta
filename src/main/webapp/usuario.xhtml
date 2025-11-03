@@ -21,6 +21,7 @@
                 
                 <p:toolbarGroup align="right">
 	                <p:inputText id="termoBusca" 
+	                             value="#{usuarioController.termoBusca}" 
 	                             placeholder="Buscar por Nome, Email ou CPF" 
 	                             style="width: 250px; margin-right: 5px;"
 	                             onkeypress="if (event.keyCode == 13) { document.getElementById('formUsuario:btnBusca').click(); return false; }" />
@@ -28,6 +29,7 @@
 	                <p:commandButton id="btnBusca" 
 	                                 value="Buscar" 
 	                                 icon="pi pi-search"
+	                                 actionListener="#{usuarioController.buscar}"
 	                                 update="tabelaUsuarios messages"
 	                                 styleClass="ui-button-info" />
             	</p:toolbarGroup>

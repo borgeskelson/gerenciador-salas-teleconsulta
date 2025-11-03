@@ -21,6 +21,7 @@
                 
                 <p:toolbarGroup align="right">
 		            <p:inputText id="termoBusca" 
+		                         value="#{salaController.termoBusca}" 
 		                         placeholder="Buscar por Nome ou Unidade de Saúde" 
 		                         style="width: 300px; margin-right: 5px;"
 		                         onkeypress="if (event.keyCode == 13) { document.getElementById('formSala:btnBusca').click(); return false; }" />
@@ -28,6 +29,7 @@
 		            <p:commandButton id="btnBusca" 
 		                             value="Buscar" 
 		                             icon="pi pi-search"
+		                             actionListener="#{salaController.buscar}"
 		                             update=":formSala:tabelaSalas :formSala:messages"
 		                             styleClass="ui-button-info" />
 		        </p:toolbarGroup>
