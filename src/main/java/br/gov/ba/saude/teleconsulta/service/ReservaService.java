@@ -6,7 +6,7 @@ import br.gov.ba.saude.teleconsulta.model.Reserva;
 
 public interface ReservaService {
 	List<Reserva> buscarTodas();
-	Reserva criar(Reserva reserva);
-	Reserva editar(Reserva reserva);
+	Reserva criar(Reserva reserva) throws Exception;
+	Reserva editar(Reserva reserva) throws Exception;
 	void remover(Long id);
 }

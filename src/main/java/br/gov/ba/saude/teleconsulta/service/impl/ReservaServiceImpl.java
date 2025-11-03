@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.gov.ba.saude.teleconsulta.exception.ReservaException;
 import br.gov.ba.saude.teleconsulta.model.Reserva;
 import br.gov.ba.saude.teleconsulta.repository.ReservaRepository;
 import br.gov.ba.saude.teleconsulta.service.ReservaService;
@@ -40,7 +41,24 @@ public class ReservaServiceImpl implements ReservaService {
      */
     @Transactional
     @Override
-    public Reserva criar(Reserva reserva) {
+    public Reserva criar(Reserva reserva) throws ReservaException {
+        // Validações de tempo
+        if (reserva.getDataHoraTermino().isBefore(reserva.getDataHoraInicio()) || 
+            reserva.getDataHoraTermino().isEqual(reserva.getDataHoraInicio())) {
+            throw new ReservaException("O término da reserva deve ser posterior ao início.");
+        }
+        
+        // Verifica conflito de horário
+        List<Reserva> conflitos = reservaRepository.findBySalaAndDataHoraTerminoAfterAndDataHoraInicioBefore(
+            reserva.getSala(), 
+            reserva.getDataHoraInicio(), 
+            reserva.getDataHoraTermino()
+        );
+
+        if (!conflitos.isEmpty()) {
+            throw new ReservaException("Já existe uma reserva para esta sala no período solicitado.");
+        }
+        
         return reservaRepository.save(reserva);
     }
     
@@ -49,7 +67,27 @@ public class ReservaServiceImpl implements ReservaService {
      */
     @Transactional
     @Override
-    public Reserva editar(Reserva reserva) {
+    public Reserva editar(Reserva reserva) throws ReservaException {
+        // Validações de tempo
+        if (reserva.getDataHoraTermino().isBefore(reserva.getDataHoraInicio()) || 
+            reserva.getDataHoraTermino().isEqual(reserva.getDataHoraInicio())) {
+            throw new ReservaException("O término da reserva deve ser posterior ao início.");
+        }
+        
+        // Verifica conflito de horário
+        List<Reserva> conflitos = reservaRepository.findBySalaAndDataHoraTerminoAfterAndDataHoraInicioBefore(
+            reserva.getSala(), 
+            reserva.getDataHoraInicio(), 
+            reserva.getDataHoraTermino()
+        );
+        
+        if (!conflitos.isEmpty()) {
+        	if (conflitos.size() > 1
+        			|| conflitos.getFirst().getId() != reserva.getId()) {
+        		throw new ReservaException("Já existe uma reserva para esta sala no período solicitado.");
+        	}
+        }
+        
         return reservaRepository.save(reserva);
     }
     
