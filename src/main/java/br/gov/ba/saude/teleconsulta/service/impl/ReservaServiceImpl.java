@@ -37,6 +37,16 @@ public class ReservaServiceImpl implements ReservaService {
     }
     
     /**
+     * Busca todas as reservas de acordo com um termo.
+     * 
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<Reserva> buscarPorTermo(String termoBusca) {
+        return reservaRepository.findByNomeOrSalaOrSiglaUnidadeOrUsuario(termoBusca.trim());
+    }
+    
+    /**
      * Valida e salva a nova reserva.
      */
     @Transactional

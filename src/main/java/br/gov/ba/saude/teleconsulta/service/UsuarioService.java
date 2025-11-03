@@ -6,6 +6,7 @@ import br.gov.ba.saude.teleconsulta.model.Usuario;
 
 public interface UsuarioService {
 	List<Usuario> buscarTodos();
+	List<Usuario> buscarPorTermo(String termoBusca);
 	Usuario criar(Usuario usuario);
 	Usuario editar(Usuario usuario);
 	void remover(Long id);

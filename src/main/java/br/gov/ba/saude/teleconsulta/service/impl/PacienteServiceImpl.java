@@ -36,6 +36,17 @@ public class PacienteServiceImpl implements PacienteService {
 	}
     
     /**
+     * Busca todos os pacientes de acordo com um termo.
+     * 
+     */
+    @Transactional(readOnly = true)
+	@Override
+	public List<Paciente> buscarPorTermo(String termoBusca) {
+		return pacienteRepository.findByNomeContainingIgnoreCaseOrNomeSocialContainingIgnoreCaseOrCpfContainingIgnoreCaseOrCnsContainingIgnoreCase(
+				termoBusca.trim(), termoBusca.trim(), termoBusca.trim(), termoBusca.trim());
+	}
+    
+    /**
      * Salva o novo paciente.
      */
     @Transactional

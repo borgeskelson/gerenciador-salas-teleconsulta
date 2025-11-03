@@ -3,6 +3,8 @@ package br.gov.ba.saude.teleconsulta.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,18 @@ public class UnidadeSaudeServiceImpl implements UnidadeSaudeService {
     @Transactional(readOnly = true)
 	@Override
 	public List<UnidadeSaude> buscarTodas() {
-		return unidadeSaudeRepository.findAll();
+		return unidadeSaudeRepository.findAll(Sort.by(Direction.ASC, "nome"));
+	}
+    
+    /**
+     * Busca todas as unidades de saúde de acordo com um termo.
+     * 
+     */
+    @Transactional(readOnly = true)
+	@Override
+	public List<UnidadeSaude> buscarPorTermo(String termoBusca) {
+		return unidadeSaudeRepository.findByNomeContainingIgnoreCaseOrSiglaContainingIgnoreCaseOrCnpjContainingIgnoreCase(
+        		termoBusca.trim(), termoBusca.trim(), termoBusca.trim());
 	}
     
     /**

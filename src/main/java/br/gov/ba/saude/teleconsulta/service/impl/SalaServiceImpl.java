@@ -39,8 +39,18 @@ public class SalaServiceImpl implements SalaService {
     @Transactional(readOnly = true)
 	@Override
 	public List<Sala> buscarTodas() {
-		return salaRepository.findAll();
+		return salaRepository.findAllOrderByUnidade();
 	}
+    
+    /**
+     * Busca todas as salas de acordo com um termo.
+     * 
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<Sala> buscarPorTermo(String termoBusca) {
+        return salaRepository.findByNomeOrSiglaUnidade(termoBusca.trim());
+    }
     
     /**
      * Salva a nova sala.

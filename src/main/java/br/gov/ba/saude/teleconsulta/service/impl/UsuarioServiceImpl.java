@@ -3,6 +3,8 @@ package br.gov.ba.saude.teleconsulta.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     @Override
 	public List<Usuario> buscarTodos() {
-		return usuarioRepository.findAll();
+		return usuarioRepository.findAll(Sort.by(Direction.ASC, "nome"));
+	}
+    
+    /**
+     * Busca todos os usuários de acordo com um termo.
+     * 
+     */
+    @Transactional(readOnly = true)
+	@Override
+	public List<Usuario> buscarPorTermo(String termoBusca) {
+		return usuarioRepository.findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCpfContainingIgnoreCase(
+				termoBusca.trim(), termoBusca.trim(), termoBusca.trim());
 	}
     
     /**
