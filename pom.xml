@@ -79,6 +79,28 @@
 			<artifactId>primefaces-spring-boot-starter</artifactId>
 			<version>${joinfaces.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.joinfaces</groupId>
+			<artifactId>security-spring-boot-starter</artifactId>
+			<version>${joinfaces.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

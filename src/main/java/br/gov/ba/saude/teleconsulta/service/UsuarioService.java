@@ -10,4 +10,5 @@ public interface UsuarioService {
 	Usuario criar(Usuario usuario);
 	Usuario editar(Usuario usuario);
 	void remover(Long id);
+	Usuario obterUsuarioPorEmail(String email);
 }

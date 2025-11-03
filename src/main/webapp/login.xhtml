@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<title>Login - Gerenciamento de Salas de Espera</title>
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		</f:facet>
+	</h:head>
+	
+	<h:body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4;">
+		<h:form id="loginForm" action="/login" method="post" style="width: 300px;">
+			<p:panel header="Acesso ao Sistema">
+				<p:growl id="msg" showDetail="true" life="3000" />
+	
+				<h:panelGrid columns="1" style="width: 100%;">
+					<p:outputLabel for="email" value="E-mail:" />
+					<p:inputText id="email" name="email" style="width: 100%;" required="true" >
+						<f:validateRegex pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" />
+					</p:inputText>
+	
+					<p:outputLabel for="password" value="Senha:" />
+					<p:password id="password" name="password" style="width: 100%;" required="true" />
+	
+					<p:commandButton value="Entrar" update="msg" ajax="false" icon="pi pi-sign-in" style="width: 100%; margin-top: 10px;" />
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</h:body>
+</html>
